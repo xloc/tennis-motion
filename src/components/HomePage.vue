@@ -15,8 +15,15 @@
 
     <div class="text-lg m-2 absolute left-0 top-0">
       <ul class="flex gap-3 font-mono">
-        <li :class="{ 'text-red-500': validatedURL === undefined }">{{ rawURL }}</li>
-        <li>{{ status }}</li>
+
+        <li>
+          <span v-if="validatedURL">{{ rawURL }}</span>
+          <span v-else class="text-red-600"> URL should look like
+            <code class="bg-red-50 rounded-lg p-1 text-sm">.../#/[ws-server-ip]:[port]/ws</code>
+            given
+            <code class="bg-red-50 rounded-lg p-1 text-sm">{{ rawURL || "''" }}</code></span>
+        </li>
+        <li v-if="validatedURL">{{ status }}</li>
 
         <template v-if="gesture">
           <li>pitch={{ format(gesture.pitch) }}</li>
