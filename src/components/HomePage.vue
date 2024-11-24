@@ -48,7 +48,8 @@ const validatedURL = computed(() => {
   const url = rawURL.value;
   if (!url) return;
   if (!url.match(/^(\d+\.){3}\d+(:\d+)?[a-z\/]*$/)) return;
-  return `ws://${url}`
+  const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+  return `${protocol}://${url}`
 })
 const { status, data } = useWebSocket(validatedURL)
 
