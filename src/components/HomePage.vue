@@ -5,11 +5,18 @@
       <OrbitControls :enable-pan="false" :enable-zoom="false" />
       <!-- :auto-rotate="true" :auto-rotate-speed="10" -->
 
-      <!-- <TresMesh> -->
+
       <TresMesh :rotation-x="gesture?.pitch ?? 0" :rotation-y="gesture?.yaw ?? 0" :rotation-z="gesture?.roll ?? 0">
         <TresBoxGeometry :args="scaledSize" />
         <TresMeshMatcapMaterial color="tomato" />
       </TresMesh>
+
+
+      <Suspense>
+        <GLTFModel v-if="false" path="/tennis_racket/scene.gltf" :scale="0.005" :position-z="-0.5"
+          :rotation-x="(gesture?.pitch ?? 0) + Math.PI / 2" :rotation-y="-(gesture?.roll ?? 0)"
+          :rotation-z="gesture?.yaw ?? 0" />
+      </Suspense>
 
     </TresCanvas>
 
@@ -40,7 +47,7 @@ import { ref, computed } from 'vue';
 import { useWebSocket } from '@vueuse/core';
 import { TresCanvas } from '@tresjs/core'
 import { useRoute } from 'vue-router'
-import { OrbitControls } from '@tresjs/cientos'
+import { OrbitControls, GLTFModel } from '@tresjs/cientos'
 
 const route = useRoute()
 const rawURL = computed(() => route.params.catchAll as string | undefined)
