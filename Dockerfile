@@ -1,5 +1,5 @@
 FROM node:lts-alpine
-RUN npm install -g pnpm
+RUN npm install -g pnpm http-server
 
 WORKDIR /app
 
