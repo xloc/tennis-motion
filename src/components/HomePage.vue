@@ -1,21 +1,54 @@
 <template>
   <div class="w-screen h-screen relative">
     <TresCanvas window-size>
-      <TresPerspectiveCamera :position="[0, 5, 0]" />
+      <TresPerspectiveCamera :position="[0, 0, 5]" />
       <OrbitControls :enable-pan="false" :enable-zoom="false" />
       <!-- :auto-rotate="true" :auto-rotate-speed="10" -->
 
 
-      <TresMesh :rotation-x="gesture?.pitch ?? 0" :rotation-y="gesture?.yaw ?? 0" :rotation-z="gesture?.roll ?? 0">
+      <TresMesh :rotation="getEular(gesture, 'XYZ')">
         <TresBoxGeometry :args="scaledSize" />
         <TresMeshMatcapMaterial color="tomato" />
       </TresMesh>
 
+      <!-- <TresMesh :rotation="getEular(gesture, 'XYZ')" :position="[-1, -1, 0]" :scale="0.2">
+        <TresBoxGeometry :args="scaledSize" />
+        <TresMeshMatcapMaterial color="tomato" />
+      </TresMesh>
+
+      <TresMesh :rotation="getEular(gesture, 'XZY')" :position="[-1, 0, 0]" :scale="0.2">
+        <TresBoxGeometry :args="scaledSize" />
+        <TresMeshMatcapMaterial color="tomato" />
+      </TresMesh>
+
+      <TresMesh :rotation="getEular(gesture, 'YXZ')" :position="[-1, 1, 0]" :scale="0.2">
+        <TresBoxGeometry :args="scaledSize" />
+        <TresMeshMatcapMaterial color="tomato" />
+      </TresMesh>
+
+      <TresMesh :rotation="getEular(gesture, 'YZX')" :position="[0, -1, 0]" :scale="0.2">
+        <TresBoxGeometry :args="scaledSize" />
+        <TresMeshMatcapMaterial color="tomato" />
+      </TresMesh>
+
+      <TresMesh :rotation="getEular(gesture, 'ZXY')" :position="[0, 0, 0]" :scale="0.2">
+        <TresBoxGeometry :args="scaledSize" />
+        <TresMeshMatcapMaterial color="tomato" />
+      </TresMesh>
+
+      <TresMesh :rotation="getEular(gesture, 'ZYX')" :position="[0, 1, 0]" :scale="0.2">
+        <TresBoxGeometry :args="scaledSize" />
+        <TresMeshMatcapMaterial color="tomato" />
+      </TresMesh> -->
+
+
+
+
 
       <Suspense>
-        <GLTFModel v-if="false" path="/tennis_racket/scene.gltf" :scale="0.005" :position-z="-0.5"
+        <GLTFModel v-if="true" path="/tennis_racket/scene.gltf" :scale="0.005" :position-z="-0.5"
           :rotation-x="(gesture?.pitch ?? 0) + Math.PI / 2" :rotation-y="-(gesture?.roll ?? 0)"
-          :rotation-z="gesture?.yaw ?? 0" />
+          :rotation-z="-(gesture?.yaw ?? 0)" />
       </Suspense>
 
     </TresCanvas>
@@ -48,6 +81,7 @@ import { useWebSocket } from '@vueuse/core';
 import { TresCanvas } from '@tresjs/core'
 import { useRoute } from 'vue-router'
 import { OrbitControls, GLTFModel } from '@tresjs/cientos'
+import { Euler, EulerOrder } from 'three';
 
 const route = useRoute()
 const rawURL = computed(() => route.params.catchAll as string | undefined)
@@ -66,7 +100,12 @@ interface Gesture {
   yaw: number;
 }
 
-const gesture = computed<Gesture | null>(() => {
+const getEular = (g?: Gesture, order?: EulerOrder) => {
+  if (!g) return new Euler(0, 0, 0, 'XYZ');
+  return new Euler(g.roll, g.pitch, g.yaw, order);
+}
+
+const gesture = computed<Gesture | undefined>(() => {
   return JSON.parse(data.value)
 })
 
@@ -75,7 +114,8 @@ const format = (n: number | undefined) => {
   return n.toFixed(2)
 }
 
-const size = ref([64, 7.5, 131])
+// const size = ref([64, 7.5, 131])
+const size = ref([64, 131, 7.5])
 const factor = ref(0.02)
 const scaledSize = computed(() => size.value.map(v => v * factor.value) as [number, number, number])
 </script>
